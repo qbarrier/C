@@ -8,7 +8,7 @@
 #define PAD "--------------------------------------"
 
 // COMPILATION :
-// gcc -Wall -o ex02.o -c ex02.c | gcc -o ex02 ex02.o
+// gcc -Wall -o ex03.o -c ex03.c && gcc -o ex03 ex03.o
 
 typedef struct {
     int numero;
@@ -123,7 +123,7 @@ void ft_init_eleves(Eleves *s_eleve)
                                     {2.99, 9.88, 14.72, 4.66, 8.33},   {19.25, 3.40, 11.05, 16.12, 5.57}, {8.44, 12.33, 9.91, 2.70, 14.05},  {6.25, 18.11, 7.48, 10.89, 13.62}, 
                                     {17.80, 4.20, 5.55, 9.00, 12.44},  {3.77, 11.02, 19.33, 6.88, 8.55},  {15.66, 7.44, 12.55, 4.31, 13.20}, {9.12, 5.00, 17.81, 14.30, 6.90}, 
                                     {12.48, 10.77, 3.56, 18.00, 7.77}, {4.33, 8.88, 15.14, 11.22, 2.90},  {16.40, 6.50, 9.80, 19.10, 5.03},  {7.33, 14.55, 10.14, 4.03, 12.88}, 
-                                    {11.50, 3.44, 13.99, 17.66, 6.20}, {18.70, 5.33, 2.11, 8.40, 14.10},  {7.66, 8.11, 10.37, 3.60, 15.28},  {4.33, 8.88, 15.14, 11.22, 2.90} };
+                                    {11.50, 3.44, 13.99, 17.66, 6.20}, {18.70, 5.33, 2.11, 8.40, 14.10},  {7.66, 8.11, 10.37, 3.60, 15.28},  {4.33, 19.74, 15.14, 11.22, 2.90} };
 
 
     while (index < MAX_ELEVES)
@@ -179,6 +179,11 @@ void ft_afficher_all_eleves(Eleves *s_eleve)
         index++;
     }
 }
+
+
+/////////////////// EX 02 :
+
+
 
 void ft_afficher_matiere(Matieres s_matiere)
 {
@@ -237,14 +242,64 @@ void ft_matiere_range(Eleves *s_eleve, Matieres *s_matiere, int index_matiere)
 }
 
 
+///////////////////// Ex 03 :
+
+void ft_major(Eleves *s_eleve, Matieres *s_matiere, int index_matiere)
+{
+    int index_eleve = 0;
+    int tmp = 0;
+
+    printf("\n\n%sLE/LA OU LES ELEVE(S) MAJEURS DANS LA MATIERE | %-8s | SONT :%s\n\n", PAD, (*s_matiere).nom_matiere, PAD);
+    while (index_eleve < MAX_ELEVES)
+    {
+        if ((*s_matiere).note_max == s_eleve[index_eleve].notes[index_matiere])
+        {
+            tmp = index_eleve;
+            printf("Numero | %-2d | %-10s | !!! AVEC LA NOTE DE |%-5.2lf|\n", s_eleve[index_eleve].numero ,s_eleve[index_eleve].prenom, s_eleve[index_eleve].notes[index_matiere]);
+        }
+        index_eleve++;
+    }
+    strcpy((*s_matiere).nom_major, s_eleve[tmp].prenom); // le dernier majeur sera retenu.
+}
+
+
+void ft_generale_moy(Eleves *s_eleve, Matieres *s_matiere, int index_matiere)
+{
+    int index_eleve = 0;
+    int inferieur = 0;
+
+
+    printf("\n\n%s LE NOMBRE D'ELEVE EN DESSOUS DE LA MOYENNE DE CLASSE | %-5.2lf | EN | %-8s | SONT :%s\n\n", PAD, (*s_matiere).moyenne , (*s_matiere).nom_matiere, PAD);
+    while (index_eleve < MAX_ELEVES)
+    {
+        if (s_eleve[index_eleve].notes[index_matiere] < (*s_matiere).moyenne)
+        {
+            inferieur++;
+            // printf("\nNote eleve | %-10s | %-8s | %-5.2lf |\n",s_eleve[index_eleve].prenom, (*s_matiere).nom_matiere, s_eleve[index_eleve].notes[index_matiere]);
+
+        }
+        index_eleve++;
+    }
+    printf("\n| %-2d | ELEVES\n", inferieur);
+}
+
 void ft_calcul_matiere(Eleves *s_eleve, Matieres *s_matiere)
 {
     for(int index = 0; index < 5; index++)
     {
         s_matiere[index].moyenne = ft_moyenne_matiere(s_eleve, index);
         ft_matiere_range(s_eleve, s_matiere, index);
+        ft_major(s_eleve, &s_matiere[index], index);
+        ft_generale_moy(s_eleve, &s_matiere[index], index);
     }
 }
+
+
+
+
+
+
+
 
 int main()
 {
@@ -266,8 +321,7 @@ int main()
 
     ft_calcul_matiere(s_eleve, s_matiere);
 
-    ft_afficher_all_matieres(s_matiere);
-
+     ft_afficher_all_matieres(s_matiere);
 
     
 }
